@@ -1,8 +1,10 @@
-import { createServer } from "http";
-import { Server} from "socket.io";
+const express= require( "express");
+const http =require("http");
+const { Server, Socket }= require( "socket.io");
 
-const httpServer = createServer();
-let originHost: string;
+const app = express();
+const httpServer = http.createServer(app);
+let originHost;
 if (process.env.PORT) {
   originHost = 'https://seabattle.herokuapp.com';
 } else {
@@ -16,9 +18,9 @@ const io = new Server(httpServer, {
   }
 });
 
-let users: { [key: string]: string } = {};
+let users = {};
 
-function updatePlayerStatus(id: string, status: boolean) {
+function updatePlayerStatus(id,  boolean) {
   for (let key in users) {
     if (key === id) {
       if (status === false) {
@@ -57,7 +59,7 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on('invitationResponse', (idFrom, confirmStatus: string, callback) => {
+  socket.on('invitationResponse', (idFrom, confirmStatus, callback) => {
     try {
       callback({ status: "ok" });
       io.to(idFrom).emit('invitationResponse', socket.id, confirmStatus);
@@ -108,7 +110,7 @@ io.on("connection", (socket) => {
 
   socket.on('shot', (idTo, coord, callback) => {
     try {
-      io.to(idTo).timeout(20000).emit('shot', coord, (err: Error, response: { foundCoord?: boolean, gameСontinue?: boolean,shipAlive?:boolean, errorMessage?: string }) => {
+      io.to(idTo).timeout(20000).emit('shot', coord, (err, response) => {
         try {
           if (err) {
             callback({ errorMessage: 'Проблемы с интернет соединением у противника! ' + err.message })

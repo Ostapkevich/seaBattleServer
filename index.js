@@ -1,10 +1,8 @@
 "use strict";
 exports.__esModule = true;
-var express = require("express");
-var http = require("http");
+var http_1 = require("http");
 var socket_io_1 = require("socket.io");
-var app = express();
-var httpServer = http.createServer(app);
+var httpServer = (0, http_1.createServer)();
 var originHost;
 if (process.env.PORT) {
     originHost = 'https://seabattle.herokuapp.com';
@@ -108,7 +106,7 @@ io.on("connection", function (socket) {
             io.to(idTo).timeout(20000).emit('shot', coord, function (err, response) {
                 try {
                     if (err) {
-                        callback({ status: 'Проблемы с интернет соединением у противника! ' + err.message });
+                        callback({ errorMessage: 'Проблемы с интернет соединением у противника! ' + err.message });
                     }
                     else {
                         callback(response[0]);
